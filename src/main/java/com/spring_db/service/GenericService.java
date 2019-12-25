@@ -14,5 +14,5 @@ public interface GenericService<T> {
 
     void remove(T t) throws ServiceException;
 
-    List<T> findAll() throws ServiceException;
+    List<T> getAll() throws ServiceException;
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface GeneralDAO<T> extends JpaRepository {
 
-    T findById(Long id) throws DaoExceptions;
+    T getById(Long id) throws DaoExceptions;
 
     void add(T t) throws DaoExceptions;
 

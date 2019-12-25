@@ -23,7 +23,7 @@ public abstract class GeneralService<T> implements GenericService<T> {
     @Override
     public T findById(Long id) throws ServiceException {
         try {
-            return dao.findById(id);
+            return dao.getById(id);
         }catch (DaoExceptions exceptions){
             throw new ServiceException(exceptions.getMessage());
         }
@@ -62,7 +62,7 @@ public abstract class GeneralService<T> implements GenericService<T> {
 
     @Transactional
     @Override
-    public List<T> findAll() throws ServiceException {
+    public List<T> getAll() throws ServiceException {
         try {
             return dao.findAll();
         }catch (DaoExceptions exceptions){
