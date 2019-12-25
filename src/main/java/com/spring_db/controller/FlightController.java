@@ -4,21 +4,24 @@ import com.spring_db.entity.Flight;
 import com.spring_db.exceptions.ServiceException;
 import com.spring_db.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller
 public class FlightController {
 
     private Flight flight;
     private FlightService flightService;
 
     @Autowired
-    public FlightController(FlightService flightService) {
-        this.flightService = flightService;
-    }
-
     public FlightController(Flight flight) {
         this.flight = flight;
+    }
+
+    @Autowired
+    public FlightController(FlightService flightService) {
+        this.flightService = flightService;
     }
 
     public Flight findById(Long id) throws ServiceException {

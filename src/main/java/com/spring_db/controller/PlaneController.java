@@ -24,7 +24,6 @@ public class PlaneController {
         this.planeService = planeService;
     }
 
-
     public Plane findById(Long id) throws ServiceException {
         return planeService.findById(id);
     }

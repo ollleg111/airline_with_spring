@@ -4,22 +4,24 @@ import com.spring_db.entity.Passenger;
 import com.spring_db.exceptions.ServiceException;
 import com.spring_db.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+@Controller
 public class PassengerController {
 
     private Passenger passenger;
     private PassengerService passengerService;
 
     @Autowired
-    public PassengerController(PassengerService passengerService) {
-        this.passengerService = passengerService;
+    public PassengerController(Passenger passenger) {
+        this.passenger = passenger;
     }
 
     @Autowired
-    public PassengerController(Passenger passenger) {
-        this.passenger = passenger;
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
     }
 
     public Passenger findById(Long id) throws ServiceException {
