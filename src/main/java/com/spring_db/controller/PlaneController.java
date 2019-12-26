@@ -2,7 +2,6 @@ package com.spring_db.controller;
 
 import com.spring_db.entity.Plane;
 import com.spring_db.exceptions.BadRequestException;
-import com.spring_db.exceptions.ServiceException;
 import com.spring_db.service.PlaneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -103,10 +102,42 @@ public class PlaneController {
             method = RequestMethod.GET,
             value = "/findAll",
             produces = "text/plain")
-    public ResponseEntity<String> getAll() throws ServiceException {
+    public ResponseEntity<String> getAll() {
         try {
             planeService.findAll();
             return new ResponseEntity<>(" List<Plane> was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/oldPlanes",
+            produces = "text/plain")
+    public ResponseEntity<String> oldPlanes() {
+        try {
+            planeService.oldPlanes();
+            //TODO
+            return new ResponseEntity<>(" Quantity of planes was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/regularPlanes",
+            produces = "text/plain")
+    public ResponseEntity<String> regularPlanes() {
+        try {
+            planeService.regularPlanes();
+            //TODO
+            return new ResponseEntity<>(" List<Planes> was found ", HttpStatus.OK);
         } catch (BadRequestException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

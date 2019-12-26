@@ -112,4 +112,36 @@ public class FlightController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/mostPopularTo",
+            produces = "text/plain")
+    public ResponseEntity<String> mostPopularTo() {
+        try {
+            flightService.mostPopularTo();
+            //TODO
+            return new ResponseEntity<>(" List<Flights> was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/mostPopularFrom",
+            produces = "text/plain")
+    public ResponseEntity<String> mostPopularFrom() {
+        try {
+            flightService.mostPopularFrom();
+            //TODO
+            return new ResponseEntity<>(" List<Flights> was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

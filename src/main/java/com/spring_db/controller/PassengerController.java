@@ -2,7 +2,6 @@ package com.spring_db.controller;
 
 import com.spring_db.entity.Passenger;
 import com.spring_db.exceptions.BadRequestException;
-import com.spring_db.exceptions.ServiceException;
 import com.spring_db.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -103,9 +102,25 @@ public class PassengerController {
             method = RequestMethod.GET,
             value = "/findAll",
             produces = "text/plain")
-    public ResponseEntity<String> getAll() throws ServiceException {
+    public ResponseEntity<String> getAll(){
         try {
             passengerService.findAll();
+            return new ResponseEntity<>(" List<Passenger> was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/regularPassengers",
+            produces = "text/plain")
+    public ResponseEntity<String> regularPassengers() {
+        try {
+            passengerService.regularPassengers();
+            //TODO
             return new ResponseEntity<>(" List<Passenger> was found ", HttpStatus.OK);
         } catch (BadRequestException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
