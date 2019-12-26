@@ -8,11 +8,13 @@ public interface GenericService<T> {
 
     T findById(Long id) throws ServiceException;
 
-    void add(T t) throws ServiceException;
+    void save(T t) throws ServiceException;
 
     void update(T t) throws ServiceException;
 
-    void remove(T t) throws ServiceException;
+    void delete(T t) throws ServiceException;
 
-    List<T> getAll() throws ServiceException;
+    void deleteById(Long id) throws ServiceException;
+
+    List<T> findAll() throws ServiceException;
 }

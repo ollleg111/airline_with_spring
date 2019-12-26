@@ -1,7 +1,7 @@
 package com.spring_db.service;
 
 import com.spring_db.dao.GeneralDAO;
-import com.spring_db.exceptions.DaoExceptions;
+import com.spring_db.exceptions.DaoException;
 import com.spring_db.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,30 +13,41 @@ import java.util.List;
 public abstract class GeneralService<T> implements GenericService<T> {
 
     private GeneralDAO<T> dao;
+    private Class<T> typeParameterClass;
 
     @Autowired
     public GeneralService(GeneralDAO<T> dao) {
         this.dao = dao;
     }
 
-    @Transactional
-    @Override
-    public T findById(Long id) throws ServiceException {
-        try {
-            return dao.getById(id);
-        }catch (DaoExceptions exceptions){
-            throw new ServiceException(exceptions.getMessage());
-        }
-
+    @Autowired
+    public void setTypeParameterClass(Class<T> typeParameterClass) {
+        this.typeParameterClass = typeParameterClass;
     }
 
     @Transactional
     @Override
-    public void add(T t) throws ServiceException {
+    public T findById(Long id) throws ServiceException {
         try {
-            dao.add(t);
-        }catch (DaoExceptions exceptions){
-            throw new ServiceException(exceptions.getMessage());
+            return dao.getOne(id);
+        }catch (DaoException exception){
+            System.err.println("findById is failed");
+            System.err.println(exception.getMessage());
+            throw new ServiceException(" The method findById(Long id) was failed in class "
+                    + typeParameterClass.getName());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void save(T t) throws ServiceException {
+        try {
+            dao.save(t);
+        }catch (DaoException exception){
+            System.err.println("save is failed");
+            System.err.println(exception.getMessage());
+            throw new ServiceException(" The method save(T t) was failed in class "
+                    + typeParameterClass.getName());
         }
     }
 
@@ -44,29 +55,38 @@ public abstract class GeneralService<T> implements GenericService<T> {
     @Override
     public void update(T t) throws ServiceException {
         try {
-            dao.update(t);
-        }catch (DaoExceptions exceptions){
-            throw new ServiceException(exceptions.getMessage());
+            dao.save(t);
+        }catch (DaoException exception){
+            System.err.println("update is failed");
+            System.err.println(exception.getMessage());
+            throw new ServiceException(" The method update(T t) was failed in class "
+                    + typeParameterClass.getName());
         }
     }
 
     @Transactional
     @Override
-    public void remove(T t) throws ServiceException {
+    public void delete(T t) throws ServiceException {
         try {
-            dao.remove(t);
-        }catch (DaoExceptions exceptions){
-            throw new ServiceException(exceptions.getMessage());
+            dao.delete(t);
+        }catch (DaoException exception){
+            System.err.println("delete is failed");
+            System.err.println(exception.getMessage());
+            throw new ServiceException(" The method delete(T t) was failed in class "
+                    + typeParameterClass.getName());
         }
     }
 
     @Transactional
     @Override
-    public List<T> getAll() throws ServiceException {
+    public List<T> findAll() throws ServiceException {
         try {
             return dao.findAll();
-        }catch (DaoExceptions exceptions){
-            throw new ServiceException(exceptions.getMessage());
+        }catch (DaoException exception){
+            System.err.println("getAll is failed");
+            System.err.println(exception.getMessage());
+            throw new ServiceException(" The method getAll() was failed in class "
+                    + typeParameterClass.getName());
         }
     }
 }

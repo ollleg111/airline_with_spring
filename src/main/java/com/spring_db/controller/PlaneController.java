@@ -1,46 +1,116 @@
 package com.spring_db.controller;
 
 import com.spring_db.entity.Plane;
+import com.spring_db.exceptions.BadRequestException;
 import com.spring_db.exceptions.ServiceException;
 import com.spring_db.service.PlaneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping("/plane")
 public class PlaneController {
 
-    private Plane plane;
     private PlaneService planeService;
-
-    @Autowired
-    public PlaneController(Plane plane) {
-        this.plane = plane;
-    }
 
     @Autowired
     public PlaneController(PlaneService planeService) {
         this.planeService = planeService;
     }
 
-    public Plane findById(Long id) throws ServiceException {
-        return planeService.findById(id);
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/find",
+            produces = "text/plain")
+    public ResponseEntity<String> findById(@RequestParam(value = "id") Long id) {
+        try {
+            planeService.findById(id);
+            return new ResponseEntity<>(" Plane was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public void add(Plane plane) throws ServiceException {
-        planeService.add(plane);
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/save",
+            produces = "text/plain")
+    public ResponseEntity<String> save(@RequestBody Plane plane) {
+        try {
+            planeService.save(plane);
+            return new ResponseEntity<>(" Plane was saved ", HttpStatus.CREATED);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public void update(Plane plane) throws ServiceException {
-        planeService.update(plane);
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            value = "/update",
+            produces = "text/plain")
+    public ResponseEntity<String> update(@RequestBody Plane plane) {
+        try {
+            planeService.update(plane);
+            return new ResponseEntity<>(" Plane was updated ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public void remove(Plane plane) throws ServiceException {
-        planeService.remove(plane);
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            value = "/delete",
+            produces = "text/plain")
+    public ResponseEntity<String> delete(@RequestBody Plane plane) {
+        try {
+            planeService.delete(plane);
+            return new ResponseEntity<>(" Plane was deleted ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public List<Plane> getAll() throws ServiceException {
-        return planeService.getAll();
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            value = "/deleteById",
+            produces = "text/plain")
+    public ResponseEntity<String> deleteById(@RequestParam(value = "id") Long id) {
+        try {
+            planeService.deleteById(id);
+            return new ResponseEntity<>(" Plane was deleted ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/findAll",
+            produces = "text/plain")
+    public ResponseEntity<String> getAll() throws ServiceException {
+        try {
+            planeService.findAll();
+            return new ResponseEntity<>(" List<Plane> was found ", HttpStatus.OK);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
