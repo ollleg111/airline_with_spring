@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public abstract class GeneralService<T> implements GenericService<T> {
+public abstract class GeneralService<T> implements ServiceInterface<T> {
 
     private GeneralDAO<T> dao;
     private Class<T> typeParameterClass;

@@ -4,7 +4,7 @@ import com.spring_db.exceptions.ServiceException;
 
 import java.util.List;
 
-public interface GenericService<T> {
+public interface ServiceInterface<T> {
 
     T findById(Long id) throws ServiceException;
 
