@@ -55,6 +55,7 @@ public class FlightService extends GeneralService<Flight>{
         super.delete(flight);
     }
 
+    @Transactional
     public void deleteById(Long id) throws ServiceException {
         Flight flight = flightDAO.getOne(id);
         flightNullValidator(flight);

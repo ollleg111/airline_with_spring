@@ -83,9 +83,9 @@ public abstract class GeneralService<T> implements GenericService<T> {
         try {
             return dao.findAll();
         }catch (DaoException exception){
-            System.err.println("getAll is failed");
+            System.err.println("findAll is failed");
             System.err.println(exception.getMessage());
-            throw new ServiceException(" The method getAll() was failed in class "
+            throw new ServiceException(" The method findAll() was failed in class "
                     + typeParameterClass.getName());
         }
     }

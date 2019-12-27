@@ -54,6 +54,7 @@ public class PlaneService extends GeneralService<Plane> {
         super.delete(plane);
     }
 
+    @Transactional
     public void deleteById(Long id) throws ServiceException {
         Plane plane = planeDAO.getOne(id);
         planeNullValidator(plane);

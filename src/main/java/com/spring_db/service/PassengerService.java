@@ -53,6 +53,7 @@ public class PassengerService extends GeneralService<Passenger>{
         super.delete(passenger);
     }
 
+    @Transactional
     public void deleteById(Long id) throws ServiceException {
         Passenger passenger = passengerDAO.getOne(id);
         passengerNullValidator(passenger);
