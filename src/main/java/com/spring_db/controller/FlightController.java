@@ -157,7 +157,7 @@ public class FlightController {
         StringBuilder stringBuilder = new StringBuilder();
         int count = 1;
         for (String city : cities) {
-            stringBuilder.append(count).append(" ").append(city).append(": ").append(map.get(city));
+            stringBuilder.append(count).append(". ").append(city).append(": ").append(map.get(city));
             count++;
         }
         return stringBuilder.toString();
