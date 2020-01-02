@@ -39,13 +39,13 @@ public class PassengerService extends GeneralService<Passenger>{
     }
 
     @Override
-    public void save(Passenger passenger) throws ServiceException {
-        super.save(passenger);
+    public Passenger save(Passenger passenger) throws ServiceException {
+        return super.save(passenger);
     }
 
     @Override
-    public void update(Passenger passenger) throws ServiceException {
-        super.update(passenger);
+    public Passenger update(Passenger passenger) throws ServiceException {
+        return super.update(passenger);
     }
 
     @Override
@@ -71,10 +71,14 @@ public class PassengerService extends GeneralService<Passenger>{
                 PassengerService.class.getName());
     }
 
+    /*
+    regularPassengers(int year) - пассажиры, с больше 25 полетов за год
+     */
     @Transactional
-    public List regularPassengers() throws ServiceException{
+    public List<Passenger> regularPassengers(int year) throws ServiceException{
         try {
             Query query = entityManager.createNativeQuery(REGULAR_PASSENGERS_REQUEST, Passenger.class);
+            query.setParameter("year", year);
             return query.getResultList();
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());

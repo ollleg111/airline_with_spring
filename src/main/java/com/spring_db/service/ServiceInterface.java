@@ -8,9 +8,9 @@ public interface ServiceInterface<T> {
 
     T findById(Long id) throws ServiceException;
 
-    void save(T t) throws ServiceException;
+    T save(T t) throws ServiceException;
 
-    void update(T t) throws ServiceException;
+    T update(T t) throws ServiceException;
 
     void delete(T t) throws ServiceException;
 

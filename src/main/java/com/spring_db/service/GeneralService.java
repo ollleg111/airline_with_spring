@@ -40,9 +40,9 @@ public abstract class GeneralService<T> implements ServiceInterface<T> {
 
     @Transactional
     @Override
-    public void save(T t) throws ServiceException {
+    public T save(T t) throws ServiceException {
         try {
-            dao.save(t);
+            return dao.save(t);
         }catch (DaoException exception){
             System.err.println("save is failed");
             System.err.println(exception.getMessage());
@@ -53,9 +53,9 @@ public abstract class GeneralService<T> implements ServiceInterface<T> {
 
     @Transactional
     @Override
-    public void update(T t) throws ServiceException {
+    public T update(T t) throws ServiceException {
         try {
-            dao.save(t);
+            return dao.save(t);
         }catch (DaoException exception){
             System.err.println("update is failed");
             System.err.println(exception.getMessage());

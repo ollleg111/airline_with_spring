@@ -40,13 +40,13 @@ public class PlaneService extends GeneralService<Plane> {
     }
 
     @Override
-    public void save(Plane plane) throws ServiceException {
-        super.save(plane);
+    public Plane save(Plane plane) throws ServiceException {
+        return super.save(plane);
     }
 
     @Override
-    public void update(Plane plane) throws ServiceException {
-        super.update(plane);
+    public Plane update(Plane plane) throws ServiceException {
+        return super.update(plane);
     }
 
     @Override
@@ -72,11 +72,14 @@ public class PlaneService extends GeneralService<Plane> {
                 PlaneService.class.getName());
     }
 
+    /*
+    oldPlanes() - самолеты старше 20 лет
+     */
     @Transactional
-    public Long oldPlanes() throws ServiceException {
+    public List<Plane> oldPlanes() throws ServiceException {
         try {
-            Query query = entityManager.createNativeQuery(OLD_PLANES_REQUEST, Long.class);
-            return (Long) query.getSingleResult();
+            Query query = entityManager.createNativeQuery(OLD_PLANES_REQUEST, Plane.class);
+            return query.getResultList();
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation with planes was filed in method" +
@@ -84,15 +87,25 @@ public class PlaneService extends GeneralService<Plane> {
         }
     }
 
+    /*
+    regularPlanes(int year) - самолеты, которые с больше 300 полетов за год
+     */
     @Transactional
-    public List regularPlanes() throws ServiceException {
+    public List<Plane> regularPlanes(int year) throws ServiceException {
+        yearValidator(year);
         try {
             Query query = entityManager.createNativeQuery(REGULAR_PLANES_REQUEST, Plane.class);
+            query.setParameter("year", year);
             return query.getResultList();
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation with planes was filed in method" +
                     " regularPlanes() from class " + PlaneService.class.getName());
         }
+    }
+
+    private void yearValidator(int year) throws BadRequestException {
+        if (year <= 0) throw new BadRequestException(" You entered wrong data in field: Year ! This is test " +
+                " from method yearValidator(int year) in the method " + PlaneService.class.getName());
     }
 }

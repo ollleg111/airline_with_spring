@@ -3,7 +3,6 @@ package com.spring_db.service;
 import com.spring_db.dao.FlightDAO;
 import com.spring_db.dao.GeneralDAO;
 import com.spring_db.entity.Flight;
-import com.spring_db.entity.Plane;
 import com.spring_db.exceptions.BadRequestException;
 import com.spring_db.exceptions.DaoException;
 import com.spring_db.exceptions.ServiceException;
@@ -14,10 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class FlightService extends GeneralService<Flight>{
+public class FlightService extends GeneralService<Flight> {
+
+    private static final String MOST_POPULAR_CITY_TO_REQUEST = "";
+    private static final String MOST_POPULAR_CITY_FROM_REQUEST = "";
+    private static final String MOST_POPULAR_FLIGHTS_CITY_TO_REQUEST = "";
+    private static final String MOST_POPULAR_FLIGHTS_CITY_FROM_REQUEST = "";
 
     private FlightDAO flightDAO;
 
@@ -30,9 +36,6 @@ public class FlightService extends GeneralService<Flight>{
         this.flightDAO = flightDAO;
     }
 
-    private static final String MOST_POPULAR_TO_REQUEST = "";
-    private static final String MOST_POPULAR_FROM_REQUEST = "";
-
     @Override
     public Flight findById(Long id) throws ServiceException {
         Flight flight = flightDAO.getOne(id);
@@ -41,13 +44,13 @@ public class FlightService extends GeneralService<Flight>{
     }
 
     @Override
-    public void save(Flight flight) throws ServiceException {
-        super.save(flight);
+    public Flight save(Flight flight) throws ServiceException {
+        return super.save(flight);
     }
 
     @Override
-    public void update(Flight flight) throws ServiceException {
-        super.update(flight);
+    public Flight update(Flight flight) throws ServiceException {
+        return super.update(flight);
     }
 
     @Override
@@ -73,27 +76,44 @@ public class FlightService extends GeneralService<Flight>{
                 FlightService.class.getName());
     }
 
-    @Transactional
-    public List mostPopularTo() throws ServiceException {
-        try {
-            Query query = entityManager.createNativeQuery(MOST_POPULAR_TO_REQUEST, Flight.class);
-            return query.getResultList();
-        } catch (DaoException exception) {
-            System.err.println(exception.getMessage());
-            throw new ServiceException("Operation with flights was filed in method" +
-                    " mostPopularTo() from class " + FlightService.class.getName());
-        }
+    /*
+    mostPopularTo() - список ТОП 10 самых популярных рейсов по городам назначения
+     */
+    public Map<String, List<Flight>> mostPopularTo() throws ServiceException {
+        return mostPopular(
+                MOST_POPULAR_CITY_TO_REQUEST,
+                MOST_POPULAR_FLIGHTS_CITY_TO_REQUEST);
+    }
+
+    /*
+    mostPopularFrom() - список ТОП 10 самых популярных рейсов по городам вылета
+     */
+    public Map<String, List<Flight>> mostPopularFrom() throws ServiceException {
+        return mostPopular(
+                MOST_POPULAR_CITY_FROM_REQUEST,
+                MOST_POPULAR_FLIGHTS_CITY_FROM_REQUEST);
     }
 
     @Transactional
-    public List mostPopularFrom() throws ServiceException {
+    public Map<String, List<Flight>> mostPopular(
+            String cityRequestString,
+            String flightRequestString) throws ServiceException {
+        Map<String, List<Flight>> map;
         try {
-            Query query = entityManager.createNativeQuery(MOST_POPULAR_FROM_REQUEST, Flight.class);
-            return query.getResultList();
+            Query query = entityManager.createNativeQuery(cityRequestString, String.class);
+            map = new HashMap<>();
+            List<String> mostPopularCity = query.getResultList();
+
+            for (String city : mostPopularCity) {
+                Query queryFlights = entityManager.createNativeQuery(flightRequestString, Flight.class);
+                queryFlights.setParameter("CITY", city);
+                map.put(city, queryFlights.getResultList());
+            }
+            return map;
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
-            throw new ServiceException("Operation with flights was filed in method" +
-                    " mostPopularFrom() from class " + FlightService.class.getName());
+            throw new ServiceException("Operation was filed in method" +
+                    " mostPopular() from class " + FlightService.class.getName());
         }
     }
 }
