@@ -25,8 +25,8 @@ public class FlightService extends GeneralService<Flight> {
 
     private static final String MOST_POPULAR_CITY_TO_REQUEST = "";
     private static final String MOST_POPULAR_CITY_FROM_REQUEST = "";
-    private static final String MOST_POPULAR_FLIGHTS_CITY_TO_REQUEST = "";
-    private static final String MOST_POPULAR_FLIGHTS_CITY_FROM_REQUEST = "";
+    private static final String MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST = "";
+    private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST = "";
 
     private FlightDAO flightDAO;
 
@@ -111,7 +111,7 @@ public class FlightService extends GeneralService<Flight> {
     public Map<String, List<Flight>> mostPopularTo() throws ServiceException {
         return mostPopular(
                 MOST_POPULAR_CITY_TO_REQUEST,
-                MOST_POPULAR_FLIGHTS_CITY_TO_REQUEST);
+                MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST);
     }
 
     /*
@@ -120,7 +120,7 @@ public class FlightService extends GeneralService<Flight> {
     public Map<String, List<Flight>> mostPopularFrom() throws ServiceException {
         return mostPopular(
                 MOST_POPULAR_CITY_FROM_REQUEST,
-                MOST_POPULAR_FLIGHTS_CITY_FROM_REQUEST);
+                MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST);
     }
 
     @Transactional
