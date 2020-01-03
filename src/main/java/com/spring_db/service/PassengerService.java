@@ -34,7 +34,8 @@ public class PassengerService extends GeneralService<Passenger> {
     @Override
     public Passenger findById(Long id) throws ServiceException {
         Passenger passenger = passengerDAO.getOne(id);
-        passengerNullValidator(passenger);
+//        passengerNullValidator(passenger);
+        FlightService.nullValidator(passenger);
         return super.findById(id);
     }
 
@@ -53,22 +54,16 @@ public class PassengerService extends GeneralService<Passenger> {
         super.delete(passenger);
     }
 
-    @Transactional
     public void deleteById(Long id) throws ServiceException {
         Passenger passenger = passengerDAO.getOne(id);
-        passengerNullValidator(passenger);
+//        passengerNullValidator(passenger);
+        FlightService.nullValidator(passenger);
         super.delete(passenger);
     }
 
     @Override
     public List<Passenger> findAll() throws ServiceException {
         return super.findAll();
-    }
-
-    private void passengerNullValidator(Passenger passenger) throws RuntimeException {
-        if (passenger == null) throw new BadRequestException("Passenger does not exist in method" +
-                " passengerNullValidator(Passenger passenger) from class " +
-                PassengerService.class.getName());
     }
 
     /*
@@ -86,4 +81,10 @@ public class PassengerService extends GeneralService<Passenger> {
                     " regularPassengers() from class " + PassengerService.class.getName());
         }
     }
+
+//    private void passengerNullValidator(Passenger passenger) throws RuntimeException {
+//        if (passenger == null) throw new BadRequestException("Passenger does not exist in method" +
+//                " passengerNullValidator(Passenger passenger) from class " +
+//                PassengerService.class.getName());
+//    }
 }

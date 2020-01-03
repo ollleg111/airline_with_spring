@@ -35,7 +35,8 @@ public class PlaneService extends GeneralService<Plane> {
     @Override
     public Plane findById(Long id) throws ServiceException {
         Plane plane = planeDAO.getOne(id);
-        planeNullValidator(plane);
+//        planeNullValidator(plane);
+        GeneralService.nullValidator(plane);
         return super.findById(id);
     }
 
@@ -54,22 +55,16 @@ public class PlaneService extends GeneralService<Plane> {
         super.delete(plane);
     }
 
-    @Transactional
     public void deleteById(Long id) throws ServiceException {
         Plane plane = planeDAO.getOne(id);
-        planeNullValidator(plane);
+//        planeNullValidator(plane);
+        GeneralService.nullValidator(plane);
         super.delete(plane);
     }
 
     @Override
     public List<Plane> findAll() throws ServiceException {
         return super.findAll();
-    }
-
-    private void planeNullValidator(Plane plane) throws RuntimeException {
-        if (plane == null) throw new BadRequestException("Plane does not exist in method" +
-                " planeNullValidator(Plane plane) from class " +
-                PlaneService.class.getName());
     }
 
     /*
@@ -108,4 +103,10 @@ public class PlaneService extends GeneralService<Plane> {
         if (year <= 0) throw new BadRequestException(" You entered wrong data in field: Year ! This is test " +
                 " from method yearValidator(int year) in the method " + PlaneService.class.getName());
     }
+
+//    private void planeNullValidator(Plane plane) throws RuntimeException {
+//        if (plane == null) throw new BadRequestException("Plane does not exist in method" +
+//                " planeNullValidator(Plane plane) from class " +
+//                PlaneService.class.getName());
+//    }
 }

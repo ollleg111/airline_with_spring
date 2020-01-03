@@ -42,7 +42,8 @@ public class FlightService extends GeneralService<Flight> {
     @Override
     public Flight findById(Long id) throws ServiceException {
         Flight flight = flightDAO.getOne(id);
-        flightNullValidator(flight);
+//        flightNullValidator(flight);
+        GeneralService.nullValidator(flight);
         return super.findById(id);
     }
 
@@ -61,22 +62,16 @@ public class FlightService extends GeneralService<Flight> {
         super.delete(flight);
     }
 
-    @Transactional
     public void deleteById(Long id) throws ServiceException {
         Flight flight = flightDAO.getOne(id);
-        flightNullValidator(flight);
+//        flightNullValidator(flight);
+        GeneralService.nullValidator(flight);
         super.delete(flight);
     }
 
     @Override
     public List<Flight> findAll() throws ServiceException {
         return super.findAll();
-    }
-
-    private void flightNullValidator(Flight flight) throws RuntimeException {
-        if (flight == null) throw new BadRequestException("Flight does not exist in method" +
-                " flightNullValidator(Flight flight) from class " +
-                FlightService.class.getName());
     }
 
     /*
@@ -87,6 +82,7 @@ public class FlightService extends GeneralService<Flight> {
     модели самолета
      */
     public List<Flight> flightsByDate(Filter filter) throws ServiceException {
+        validate(filter);
         try {
             Query query = entityManager.createNativeQuery(FILTER_REQUEST, Flight.class);
             query.setParameter("DATE", filter.getOneDayFlight());
@@ -149,4 +145,37 @@ public class FlightService extends GeneralService<Flight> {
                     " mostPopular() from class " + FlightService.class.getName());
         }
     }
+
+    private void validate(Filter filter) throws BadRequestException {
+        if (filter.getOneDayFlight() == null) {
+            throw new BadRequestException("Wrong Date's field in oneDayFlight from method validate(Filter filter) " +
+                    "in class " + FlightService.class.getName());
+        }
+        if (filter.getDateFrom() == null) {
+            throw new BadRequestException("Wrong Date's field in dateFrom from method validate(Filter filter) " +
+                    "in class " + FlightService.class.getName());
+        }
+        if (filter.getDateTo() == null) {
+            throw new BadRequestException("Wrong Date's field in dateTo from method validate(Filter filter) " +
+                    "in class " + FlightService.class.getName());
+        }
+        if (filter.getCityFrom() == null) {
+            throw new BadRequestException("Wrong City's field in cityFrom from method validate(Filter filter) " +
+                    "in class " + FlightService.class.getName());
+        }
+        if (filter.getCityTo() == null) {
+            throw new BadRequestException("Wrong City's field in cityTo from method validate(Filter filter) " +
+                    "in class " + FlightService.class.getName());
+        }
+        if (filter.getPlaneModel() == null) {
+            throw new BadRequestException("Wrong Plane's field in planeModel from method validate(Filter filter) " +
+                    "in class " + FlightService.class.getName());
+        }
+    }
+
+//    private void flightNullValidator(Flight flight) throws RuntimeException {
+//        if (flight == null) throw new BadRequestException("Flight does not exist in method" +
+//                " flightNullValidator(Flight flight) from class " +
+//                FlightService.class.getName());
+//    }
 }

@@ -1,6 +1,7 @@
 package com.spring_db.service;
 
 import com.spring_db.dao.GeneralDAO;
+import com.spring_db.exceptions.BadRequestException;
 import com.spring_db.exceptions.DaoException;
 import com.spring_db.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +89,10 @@ public abstract class GeneralService<T> implements ServiceInterface<T> {
             throw new ServiceException(" The method findAll() was failed in class "
                     + typeParameterClass.getName());
         }
+    }
+
+    public static void nullValidator(Object o) throws RuntimeException {
+        if (o == null) throw new BadRequestException(" Entered Object does not exist from method" +
+                " nullValidator(Object o). It's using in FlightService, PassengerService, PlaneService");
     }
 }

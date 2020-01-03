@@ -145,18 +145,11 @@ public class FlightController {
         try {
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-            if (!inputOneDayFlight.isEmpty())
                 filter.setOneDayFlight(dateFormat.parse(inputOneDayFlight));
-            if (!inputDateFrom.isEmpty())
                 filter.setDateFrom(dateFormat.parse(inputDateFrom));
-            if (!inputDateTo.isEmpty())
                 filter.setDateTo(dateFormat.parse(inputDateTo));
-
-            if (!inputCityFrom.isEmpty())
                 filter.setCityFrom(inputCityFrom);
-            if (!inputCityTo.isEmpty())
                 filter.setCityTo(inputCityTo);
-            if (!inputPlaneModel.isEmpty())
                 filter.setPlaneModel(inputPlaneModel);
 
             return new ResponseEntity<>(
