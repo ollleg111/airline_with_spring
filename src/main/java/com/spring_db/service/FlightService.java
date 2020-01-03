@@ -2,6 +2,7 @@ package com.spring_db.service;
 
 import com.spring_db.dao.FlightDAO;
 import com.spring_db.dao.GeneralDAO;
+import com.spring_db.entity.Filter;
 import com.spring_db.entity.Flight;
 import com.spring_db.exceptions.BadRequestException;
 import com.spring_db.exceptions.DaoException;
@@ -19,6 +20,8 @@ import java.util.Map;
 
 @Service
 public class FlightService extends GeneralService<Flight> {
+
+    private static final String FILTER_REQUEST = "";
 
     private static final String MOST_POPULAR_CITY_TO_REQUEST = "";
     private static final String MOST_POPULAR_CITY_FROM_REQUEST = "";
@@ -74,6 +77,33 @@ public class FlightService extends GeneralService<Flight> {
         if (flight == null) throw new BadRequestException("Flight does not exist in method" +
                 " flightNullValidator(Flight flight) from class " +
                 FlightService.class.getName());
+    }
+
+    /*
+    список рейсов по дате (в один день),
+    по промежутку даты (с даты-по дату),
+    городу отправки,
+    городу назначения,
+    модели самолета
+     */
+    public List<Long> flightsByDate(Filter filter) throws ServiceException {
+        try {
+            Query query = entityManager.createNativeQuery(FILTER_REQUEST, Flight.class);
+            query.setParameter("DATE", filter.getOneDayFlight());
+            query.setParameter("DATE_FROM", filter.getDateFrom());
+            query.setParameter("DATE_TO", filter.getDateTo());
+            query.setParameter("CITY_FROM", filter.getCityFrom());
+            query.setParameter("CITY_TO", filter.getCityTo());
+            query.setParameter("MODEL", filter.getPlaneModel());
+            //TODO
+
+            return query.getResultList();
+        } catch (DaoException exception) {
+            System.err.println(exception.getMessage());
+            throw new ServiceException("Operation was filed in method" +
+                    " flightsByDate(Filter filter) from class " +
+                    FlightService.class.getName());
+        }
     }
 
     /*

@@ -16,7 +16,9 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Service
-public class PassengerService extends GeneralService<Passenger>{
+public class PassengerService extends GeneralService<Passenger> {
+
+    private static final String REGULAR_PASSENGERS_REQUEST = "";
 
     private PassengerDAO passengerDAO;
 
@@ -28,8 +30,6 @@ public class PassengerService extends GeneralService<Passenger>{
         super(dao);
         this.passengerDAO = passengerDAO;
     }
-
-    private static final String REGULAR_PASSENGERS_REQUEST = "";
 
     @Override
     public Passenger findById(Long id) throws ServiceException {
@@ -75,7 +75,7 @@ public class PassengerService extends GeneralService<Passenger>{
     regularPassengers(int year) - пассажиры, с больше 25 полетов за год
      */
     @Transactional
-    public List<Passenger> regularPassengers(int year) throws ServiceException{
+    public List<Passenger> regularPassengers(int year) throws ServiceException {
         try {
             Query query = entityManager.createNativeQuery(REGULAR_PASSENGERS_REQUEST, Passenger.class);
             query.setParameter("year", year);

@@ -18,6 +18,9 @@ import java.util.List;
 @Service
 public class PlaneService extends GeneralService<Plane> {
 
+    private static final String OLD_PLANES_REQUEST = "";
+    private static final String REGULAR_PLANES_REQUEST = "";
+
     private PlaneDAO planeDAO;
 
     @PersistenceContext
@@ -28,9 +31,6 @@ public class PlaneService extends GeneralService<Plane> {
         super(dao);
         this.planeDAO = planeDAO;
     }
-
-    private static final String OLD_PLANES_REQUEST = "";
-    private static final String REGULAR_PLANES_REQUEST = "";
 
     @Override
     public Plane findById(Long id) throws ServiceException {

@@ -122,7 +122,6 @@ public class PassengerController {
     public ResponseEntity<List<Passenger>> regularPassengers(@RequestParam(value = "year") Integer year)
             throws ServiceException {
         try {
-            passengerService.regularPassengers(year);
             return new ResponseEntity<>(passengerService.regularPassengers(year), HttpStatus.OK);
         } catch (BadRequestException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
