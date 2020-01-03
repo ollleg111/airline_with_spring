@@ -134,8 +134,7 @@ public class FlightController {
             method = RequestMethod.GET,
             value = "/flightsByDate",
             produces = "text/plain")
-    public ResponseEntity<List<Long>> flightsByDate(
-            //TODO
+    public ResponseEntity<List<Flight>> flightsByDate(
             @RequestParam(value = "oneDayFlight") String inputOneDayFlight,
             @RequestParam(value = "dateFrom") String inputDateFrom,
             @RequestParam(value = "dateTo") String inputDateTo,

@@ -86,14 +86,17 @@ public class FlightService extends GeneralService<Flight> {
     городу назначения,
     модели самолета
      */
-    public List<Long> flightsByDate(Filter filter) throws ServiceException {
+    public List<Flight> flightsByDate(Filter filter) throws ServiceException {
         try {
             Query query = entityManager.createNativeQuery(FILTER_REQUEST, Flight.class);
             query.setParameter("DATE", filter.getOneDayFlight());
+
             query.setParameter("DATE_FROM", filter.getDateFrom());
             query.setParameter("DATE_TO", filter.getDateTo());
+
             query.setParameter("CITY_FROM", filter.getCityFrom());
             query.setParameter("CITY_TO", filter.getCityTo());
+
             query.setParameter("MODEL", filter.getPlaneModel());
             //TODO
 
