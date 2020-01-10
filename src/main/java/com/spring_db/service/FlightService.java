@@ -7,6 +7,7 @@ import com.spring_db.entity.Flight;
 import com.spring_db.exceptions.BadRequestException;
 import com.spring_db.exceptions.DaoException;
 import com.spring_db.exceptions.ServiceException;
+import com.spring_db.service.filter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FlightService extends GeneralService<Flight> {
-
-    private static final String FILTER_REQUEST = "";
 
     private static final String MOST_POPULAR_CITY_TO_REQUEST = "";
     private static final String MOST_POPULAR_CITY_FROM_REQUEST = "";
@@ -29,6 +28,14 @@ public class FlightService extends GeneralService<Flight> {
     private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST = "";
 
     private FlightDAO flightDAO;
+    private Criteria criteria;
+    private MainList mainList;
+
+    private CityFromFlightsList cityFromFlightsList;
+    private CityToFlightsList cityToFlightsList;
+    private DatesFlightsList datesFlightsList;
+    private PlaneModelsList planeModelsList;
+    private TodayDateFlightsList todayDateFlightsList;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -37,6 +44,41 @@ public class FlightService extends GeneralService<Flight> {
     public FlightService(GeneralDAO<Flight> dao, FlightDAO flightDAO) {
         super(dao);
         this.flightDAO = flightDAO;
+    }
+
+    @Autowired
+    public void setCriteria(Criteria criteria) {
+        this.criteria = criteria;
+    }
+
+    @Autowired
+    public void setMainList(MainList mainList) {
+        this.mainList = mainList;
+    }
+
+    @Autowired
+    public void setCityFromFlightsList(CityFromFlightsList cityFromFlightsList) {
+        this.cityFromFlightsList = cityFromFlightsList;
+    }
+
+    @Autowired
+    public void setCityToFlightsList(CityToFlightsList cityToFlightsList) {
+        this.cityToFlightsList = cityToFlightsList;
+    }
+
+    @Autowired
+    public void setDatesFlightsList(DatesFlightsList datesFlightsList) {
+        this.datesFlightsList = datesFlightsList;
+    }
+
+    @Autowired
+    public void setPlaneModelsList(PlaneModelsList planeModelsList) {
+        this.planeModelsList = planeModelsList;
+    }
+
+    @Autowired
+    public void setTodayDateFlightsList(TodayDateFlightsList todayDateFlightsList) {
+        this.todayDateFlightsList = todayDateFlightsList;
     }
 
     @Override
@@ -84,19 +126,24 @@ public class FlightService extends GeneralService<Flight> {
     public List<Flight> flightsByDate(Filter filter) throws ServiceException {
         validate(filter);
         try {
-            Query query = entityManager.createNativeQuery(FILTER_REQUEST, Flight.class);
-            query.setParameter("DATE", filter.getOneDayFlight());
+            criteria.setFilter(filter);
+            mainList
+                    .setList(Arrays.asList(
+                            todayDateFlightsList,
+                            cityFromFlightsList,
+                            cityToFlightsList,
+                            datesFlightsList,
+                            planeModelsList));
+            return mainList
+                    .result(Stream.of(
+                            todayDateFlightsList.criteriaFlights(),
+                            cityFromFlightsList.criteriaFlights(),
+                            cityToFlightsList.criteriaFlights(),
+                            datesFlightsList.criteriaFlights(),
+                            planeModelsList.criteriaFlights())
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
 
-            query.setParameter("DATE_FROM", filter.getDateFrom());
-            query.setParameter("DATE_TO", filter.getDateTo());
-
-            query.setParameter("CITY_FROM", filter.getCityFrom());
-            query.setParameter("CITY_TO", filter.getCityTo());
-
-            query.setParameter("MODEL", filter.getPlaneModel());
-            //TODO
-
-            return query.getResultList();
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation was filed in method" +
