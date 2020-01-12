@@ -21,6 +21,8 @@ public class PlaneService extends GeneralService<Plane> {
     private static final String OLD_PLANES_REQUEST = "";
     private static final String REGULAR_PLANES_REQUEST = "";
 
+    private String alarmMessage = PlaneService.class.getName();
+
     private PlaneDAO planeDAO;
 
     @PersistenceContext
@@ -78,7 +80,7 @@ public class PlaneService extends GeneralService<Plane> {
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation with planes was filed in method" +
-                    " oldPlane() from class " + PlaneService.class.getName());
+                    " oldPlane() from class " + alarmMessage);
         }
     }
 
@@ -95,18 +97,20 @@ public class PlaneService extends GeneralService<Plane> {
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation with planes was filed in method" +
-                    " regularPlanes() from class " + PlaneService.class.getName());
+                    " regularPlanes() from class " + alarmMessage);
         }
     }
 
     private void yearValidator(int year) throws BadRequestException {
         if (year <= 0) throw new BadRequestException(" You entered wrong data in field: Year ! This is test " +
-                " from method yearValidator(int year) in the method " + PlaneService.class.getName());
+                " from method yearValidator(int year) in the method " + alarmMessage);
     }
 
-//    private void planeNullValidator(Plane plane) throws RuntimeException {
-//        if (plane == null) throw new BadRequestException("Plane does not exist in method" +
-//                " planeNullValidator(Plane plane) from class " +
-//                PlaneService.class.getName());
-//    }
+    /*
+        private void planeNullValidator(Plane plane) throws RuntimeException {
+        if (plane == null) throw new BadRequestException("Plane does not exist in method" +
+                " planeNullValidator(Plane plane) from class " +
+                PlaneService.class.getName());
+    }
+     */
 }

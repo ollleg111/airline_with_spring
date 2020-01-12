@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,11 +35,17 @@ public class FlightService extends GeneralService<Flight> {
     private Criteria criteria;
     private MainList mainList;
 
-    private CityFromFlightsList cityFromFlightsList;
-    private CityToFlightsList cityToFlightsList;
-    private DatesFlightsList datesFlightsList;
-    private PlaneModelsList planeModelsList;
-    private TodayDateFlightsList todayDateFlightsList;
+    private CriteriaBuilder cb;
+    private CriteriaQuery<Flight> cq;
+    private TypedQuery<Flight> typedQuery;
+
+    private FilterCityFromFlightsList filterCityFromFlightsList;
+    private FilterCityToFlightsList filterCityToFlightsList;
+    private FilterDatesFlightsList filterDatesFlightsList;
+    private FilterPlaneModelsList filterPlaneModelsList;
+    private FilterTodayDateFlightsList filterTodayDateFlightsList;
+
+    private String alarmMessage = FlightService.class.getName();
 
     @PersistenceContext
     EntityManager entityManager;
@@ -57,28 +67,28 @@ public class FlightService extends GeneralService<Flight> {
     }
 
     @Autowired
-    public void setCityFromFlightsList(CityFromFlightsList cityFromFlightsList) {
-        this.cityFromFlightsList = cityFromFlightsList;
+    public void setFilterCityFromFlightsList(FilterCityFromFlightsList filterCityFromFlightsList) {
+        this.filterCityFromFlightsList = filterCityFromFlightsList;
     }
 
     @Autowired
-    public void setCityToFlightsList(CityToFlightsList cityToFlightsList) {
-        this.cityToFlightsList = cityToFlightsList;
+    public void setFilterCityToFlightsList(FilterCityToFlightsList filterCityToFlightsList) {
+        this.filterCityToFlightsList = filterCityToFlightsList;
     }
 
     @Autowired
-    public void setDatesFlightsList(DatesFlightsList datesFlightsList) {
-        this.datesFlightsList = datesFlightsList;
+    public void setFilterDatesFlightsList(FilterDatesFlightsList filterDatesFlightsList) {
+        this.filterDatesFlightsList = filterDatesFlightsList;
     }
 
     @Autowired
-    public void setPlaneModelsList(PlaneModelsList planeModelsList) {
-        this.planeModelsList = planeModelsList;
+    public void setFilterPlaneModelsList(FilterPlaneModelsList filterPlaneModelsList) {
+        this.filterPlaneModelsList = filterPlaneModelsList;
     }
 
     @Autowired
-    public void setTodayDateFlightsList(TodayDateFlightsList todayDateFlightsList) {
-        this.todayDateFlightsList = todayDateFlightsList;
+    public void setFilterTodayDateFlightsList(FilterTodayDateFlightsList filterTodayDateFlightsList) {
+        this.filterTodayDateFlightsList = filterTodayDateFlightsList;
     }
 
     @Override
@@ -129,18 +139,18 @@ public class FlightService extends GeneralService<Flight> {
             criteria.setFilter(filter);
             mainList
                     .setList(Arrays.asList(
-                            todayDateFlightsList,
-                            cityFromFlightsList,
-                            cityToFlightsList,
-                            datesFlightsList,
-                            planeModelsList));
+                            filterTodayDateFlightsList,
+                            filterCityFromFlightsList,
+                            filterCityToFlightsList,
+                            filterDatesFlightsList,
+                            filterPlaneModelsList));
             return mainList
                     .result(Stream.of(
-                            todayDateFlightsList.criteriaFlights(),
-                            cityFromFlightsList.criteriaFlights(),
-                            cityToFlightsList.criteriaFlights(),
-                            datesFlightsList.criteriaFlights(),
-                            planeModelsList.criteriaFlights())
+                            filterTodayDateFlightsList.criteriaFlights(),
+                            filterCityFromFlightsList.criteriaFlights(),
+                            filterCityToFlightsList.criteriaFlights(),
+                            filterDatesFlightsList.criteriaFlights(),
+                            filterPlaneModelsList.criteriaFlights())
                             .flatMap(Collection::stream)
                             .collect(Collectors.toList()));
 
@@ -148,7 +158,97 @@ public class FlightService extends GeneralService<Flight> {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation was filed in method" +
                     " flightsByDate(Filter filter) from class " +
-                    FlightService.class.getName());
+                    alarmMessage);
+        }
+    }
+
+    // SELECT * FROM FLIGHT WHERE CITY_FROM = ?
+    @Transactional
+    public List<Flight> cityFromFlightsList(String cityFrom) throws ServiceException {
+        try {
+            cb = entityManager.getCriteriaBuilder();
+            cq = cb.createQuery(Flight.class);
+            Root<Flight> flightRoot = cq.from(Flight.class);
+            cq.select(flightRoot).where(cb.equal(flightRoot.get("CITY_FROM"), cityFrom));
+            typedQuery = entityManager.createQuery(cq);
+
+            return typedQuery.getResultList();
+        } catch (DaoException exception) {
+            System.err.println(exception.getMessage());
+            throw new ServiceException("Operation was filed in method" +
+                    " cityFromFlightsList(String cityFrom) from class " + alarmMessage);
+        }
+    }
+
+    // SELECT * FROM FLIGHT WHERE CITY_TO = ?
+    @Transactional
+    public List<Flight> cityToFlightsList(String cityTo) throws ServiceException {
+        try {
+            cb = entityManager.getCriteriaBuilder();
+            cq = cb.createQuery(Flight.class);
+            Root<Flight> flightRoot = cq.from(Flight.class);
+            cq.select(flightRoot).where(cb.equal(flightRoot.get("CITY_TO"), cityTo));
+            typedQuery = entityManager.createQuery(cq);
+
+            return typedQuery.getResultList();
+        } catch (DaoException exception) {
+            System.err.println(exception.getMessage());
+            throw new ServiceException("Operation was filed in method" +
+                    " cityToFlightsList(String cityTo) from class " + alarmMessage);
+        }
+    }
+
+    // SELECT * FROM FLIGHT WHERE DATE_FLIGHT <= ? AND DATE_FLIGHT >= ?
+    @Transactional
+    public List<Flight> datesFlightsList(Date dateFrom, Date dateTo) throws ServiceException {
+        try {
+            cb = entityManager.getCriteriaBuilder();
+            cq = cb.createQuery(Flight.class);
+            Root<Flight> flightRoot = cq.from(Flight.class);
+            cq.select(flightRoot).where(cb.between(flightRoot.get("DATE_FLIGHT"), dateFrom, dateTo));
+            typedQuery = entityManager.createQuery(cq);
+
+            return typedQuery.getResultList();
+        } catch (DaoException exception) {
+            System.err.println(exception.getMessage());
+            throw new ServiceException("Operation was filed in method" +
+                    " datesFlightsList(Date dateFrom, Date dateTo) from class " + alarmMessage);
+        }
+    }
+
+    // SELECT * FROM FLIGHT WHERE PLANE = ?
+    @Transactional
+    public List<Flight> planeModelsList(String planeModel) throws ServiceException {
+        try {
+            cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Flight> cq = cb.createQuery(Flight.class);
+            Root<Flight> flightRoot = cq.from(Flight.class);
+            cq.select(flightRoot).where(cb.equal(flightRoot.get("PLANE"), planeModel));
+            typedQuery = entityManager.createQuery(cq);
+
+            return typedQuery.getResultList();
+        } catch (DaoException exception) {
+            System.err.println(exception.getMessage());
+            throw new ServiceException("Operation was filed in method" +
+                    " planeModelsList(String planeModel) from class " + alarmMessage);
+        }
+    }
+
+    // SELECT * FROM FLIGHT WHERE DATE_FLIGHT = ?
+    @Transactional
+    public List<Flight> todayDateFlightList(Date today) throws ServiceException {
+        try {
+            cb = entityManager.getCriteriaBuilder();
+            cq = cb.createQuery(Flight.class);
+            Root<Flight> flightRoot = cq.from(Flight.class);
+            cq.select(flightRoot).where(cb.equal(flightRoot.get("DATE_FLIGHT"), today));
+            typedQuery = entityManager.createQuery(cq);
+
+            return typedQuery.getResultList();
+        } catch (DaoException exception) {
+            System.err.println(exception.getMessage());
+            throw new ServiceException("Operation was filed in method" +
+                    " todayDateFlightList(Date today) from class " + alarmMessage);
         }
     }
 
@@ -189,40 +289,42 @@ public class FlightService extends GeneralService<Flight> {
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new ServiceException("Operation was filed in method" +
-                    " mostPopular() from class " + FlightService.class.getName());
+                    " mostPopular() from class " + alarmMessage);
         }
     }
 
     private void validate(Filter filter) throws BadRequestException {
         if (filter.getOneDayFlight() == null) {
             throw new BadRequestException("Wrong Date's field in oneDayFlight from method validate(Filter filter) " +
-                    "in class " + FlightService.class.getName());
+                    "in class " + alarmMessage);
         }
         if (filter.getDateFrom() == null) {
             throw new BadRequestException("Wrong Date's field in dateFrom from method validate(Filter filter) " +
-                    "in class " + FlightService.class.getName());
+                    "in class " + alarmMessage);
         }
         if (filter.getDateTo() == null) {
             throw new BadRequestException("Wrong Date's field in dateTo from method validate(Filter filter) " +
-                    "in class " + FlightService.class.getName());
+                    "in class " + alarmMessage);
         }
         if (filter.getCityFrom() == null) {
             throw new BadRequestException("Wrong City's field in cityFrom from method validate(Filter filter) " +
-                    "in class " + FlightService.class.getName());
+                    "in class " + alarmMessage);
         }
         if (filter.getCityTo() == null) {
             throw new BadRequestException("Wrong City's field in cityTo from method validate(Filter filter) " +
-                    "in class " + FlightService.class.getName());
+                    "in class " + alarmMessage);
         }
         if (filter.getPlaneModel() == null) {
             throw new BadRequestException("Wrong Plane's field in planeModel from method validate(Filter filter) " +
-                    "in class " + FlightService.class.getName());
+                    "in class " + alarmMessage);
         }
     }
 
-//    private void flightNullValidator(Flight flight) throws RuntimeException {
-//        if (flight == null) throw new BadRequestException("Flight does not exist in method" +
-//                " flightNullValidator(Flight flight) from class " +
-//                FlightService.class.getName());
-//    }
+    /*
+    private void flightNullValidator(Flight flight) throws RuntimeException {
+        if (flight == null) throw new BadRequestException("Flight does not exist in method" +
+                " flightNullValidator(Flight flight) from class " +
+                FlightService.class.getName());
+    }
+     */
 }

@@ -82,9 +82,11 @@ public class PassengerService extends GeneralService<Passenger> {
         }
     }
 
-//    private void passengerNullValidator(Passenger passenger) throws RuntimeException {
-//        if (passenger == null) throw new BadRequestException("Passenger does not exist in method" +
-//                " passengerNullValidator(Passenger passenger) from class " +
-//                PassengerService.class.getName());
-//    }
+    /*
+     private void passengerNullValidator(Passenger passenger) throws RuntimeException {
+        if (passenger == null) throw new BadRequestException("Passenger does not exist in method" +
+                " passengerNullValidator(Passenger passenger) from class " +
+                PassengerService.class.getName());
+    }
+     */
 }
