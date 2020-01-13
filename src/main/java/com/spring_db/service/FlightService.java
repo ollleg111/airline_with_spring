@@ -43,9 +43,10 @@ public class FlightService extends GeneralService<Flight> {
     private FilterPlaneModelsList filterPlaneModelsList;
     private FilterTodayDateFlightsList filterTodayDateFlightsList;
 
-    private CriteriaBuilder cb;
-    private CriteriaQuery<Flight> cq;
-    private TypedQuery<Flight> typedQuery;
+
+    CriteriaBuilder cb;
+    CriteriaQuery<Flight> cq;
+    TypedQuery<Flight> typedQuery;
 
     @PersistenceContext
     EntityManager entityManager;
