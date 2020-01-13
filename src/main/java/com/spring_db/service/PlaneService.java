@@ -92,7 +92,7 @@ public class PlaneService extends GeneralService<Plane> {
         yearValidator(year);
         try {
             Query query = entityManager.createNativeQuery(REGULAR_PLANES_REQUEST, Plane.class);
-            query.setParameter("year", year);
+            query.setParameter(1, year);
             return query.getResultList();
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());

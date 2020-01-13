@@ -3,7 +3,6 @@ package com.spring_db.service;
 import com.spring_db.dao.GeneralDAO;
 import com.spring_db.dao.PassengerDAO;
 import com.spring_db.entity.Passenger;
-import com.spring_db.exceptions.BadRequestException;
 import com.spring_db.exceptions.DaoException;
 import com.spring_db.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +72,7 @@ public class PassengerService extends GeneralService<Passenger> {
     public List<Passenger> regularPassengers(int year) throws ServiceException {
         try {
             Query query = entityManager.createNativeQuery(REGULAR_PASSENGERS_REQUEST, Passenger.class);
-            query.setParameter("year", year);
+            query.setParameter(1, year);
             return query.getResultList();
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());

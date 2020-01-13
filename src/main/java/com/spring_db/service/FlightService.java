@@ -31,13 +31,11 @@ public class FlightService extends GeneralService<Flight> {
     private static final String MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST = "";
     private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST = "";
 
+    private String alarmMessage = FlightService.class.getName();
+
     private FlightDAO flightDAO;
     private Criteria criteria;
     private MainList mainList;
-
-    private CriteriaBuilder cb;
-    private CriteriaQuery<Flight> cq;
-    private TypedQuery<Flight> typedQuery;
 
     private FilterCityFromFlightsList filterCityFromFlightsList;
     private FilterCityToFlightsList filterCityToFlightsList;
@@ -45,7 +43,9 @@ public class FlightService extends GeneralService<Flight> {
     private FilterPlaneModelsList filterPlaneModelsList;
     private FilterTodayDateFlightsList filterTodayDateFlightsList;
 
-    private String alarmMessage = FlightService.class.getName();
+    private CriteriaBuilder cb;
+    private CriteriaQuery<Flight> cq;
+    private TypedQuery<Flight> typedQuery;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -282,7 +282,7 @@ public class FlightService extends GeneralService<Flight> {
 
             for (String city : mostPopularCity) {
                 Query queryFlights = entityManager.createNativeQuery(flightRequestString, Flight.class);
-                queryFlights.setParameter("CITY", city);
+                queryFlights.setParameter(1, city);
                 map.put(city, queryFlights.getResultList());
             }
             return map;
