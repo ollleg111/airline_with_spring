@@ -24,7 +24,7 @@ public class MainList {
 
     public List<Flight> result(List<Flight> flight) {
         for (Criteria criteria : list) {
-            flight.retainAll(criteria.criteriaFlights())
+            flight.retainAll(criteria.criteriaFlights());
         }
         return flight;
     }
