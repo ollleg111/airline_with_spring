@@ -22,14 +22,14 @@ public class PassengerService extends GeneralService<Passenger> {
             "SELECT " +
                     "p.id, p.last_name, p.nationality, p.date_of_birth, p.passport_code FROM " +
                     "passenger p, " +
-                    "flights_passengers f_p, " +
+                    "flights_passengers fp, " +
                     "flight f " +
-                    "WHERE p.id = f_p.passenger_id AND " +
-                    "f_p.flight_id = f.id AND " +
+                    "WHERE p.id = fp.passenger_id AND " +
+                    "fp.flight_id = f.id AND " +
                     "TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = ? " +
                     "GROUP BY " +
                     "p.id, p.last_name, p.nationality, p.date_of_birth, p.passport_code " +
-                    "HAVING COUNT(f_p.flight_id) > 25";
+                    "HAVING COUNT(fp.flight_id) > 25";
 
     private PassengerDAO passengerDAO;
 
