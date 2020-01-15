@@ -17,7 +17,19 @@ import java.util.List;
 @Service
 public class PassengerService extends GeneralService<Passenger> {
 
-    private static final String REGULAR_PASSENGERS_REQUEST = "";
+
+    private static final String REGULAR_PASSENGERS_REQUEST =
+            "SELECT " +
+                    "p.id, p.last_name, p.nationality, p.date_of_birth, p.passport_code FROM " +
+                    "passenger p, " +
+                    "flights_passengers f_p, " +
+                    "flight f " +
+                    "WHERE p.id = f_p.passenger_id AND " +
+                    "f_p.flight_id = f.id AND " +
+                    "TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = ? " +
+                    "GROUP BY " +
+                    "p.id, p.last_name, p.nationality, p.date_of_birth, p.passport_code " +
+                    "HAVING COUNT(f_p.flight_id) > 25";
 
     private PassengerDAO passengerDAO;
 
@@ -34,7 +46,7 @@ public class PassengerService extends GeneralService<Passenger> {
     public Passenger findById(Long id) throws ServiceException {
         Passenger passenger = passengerDAO.getOne(id);
 //        passengerNullValidator(passenger);
-        FlightService.nullValidator(passenger);
+        GeneralService.nullValidator(passenger);
         return super.findById(id);
     }
 
@@ -56,7 +68,7 @@ public class PassengerService extends GeneralService<Passenger> {
     public void deleteById(Long id) throws ServiceException {
         Passenger passenger = passengerDAO.getOne(id);
 //        passengerNullValidator(passenger);
-        FlightService.nullValidator(passenger);
+        GeneralService.nullValidator(passenger);
         super.delete(passenger);
     }
 

@@ -87,4 +87,59 @@ INSERT INTO "MAIN"."PASSENGER" (ID, LAST_NAME, NATIONALITY, DATE_OF_BIRTH, PASSP
 INSERT INTO "MAIN"."PASSENGER" (ID, LAST_NAME, NATIONALITY, DATE_OF_BIRTH, PASSPORT_CODE, FLIGHT) VALUES ('10002', N'Bruner', N'GER', TO_DATE('2000-01-14 14:43:36', 'YYYY-MM-DD HH24:MI:SS'), N'AA887766', '1002')
 INSERT INTO "MAIN"."PASSENGER" (ID, LAST_NAME, NATIONALITY, DATE_OF_BIRTH, PASSPORT_CODE, FLIGHT) VALUES ('10003', N'Ivanov', N'RUS', TO_DATE('2020-01-23 14:44:03', 'YYYY-MM-DD HH24:MI:SS'), N'ZZ333333', '1002')
 
+SELECT
+p.id, p.last_name, p.nationality, p.date_of_birth, p.passport_code FROM
+passenger p,
+flights_passengers fp,
+flight f WHERE
+p.id = fp.passenger_id AND
+fp.flight_id = f.id AND
+TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = 2001 GROUP BY
+p.id, p.last_name, p.nationality, p.date_of_birth, p.passport_code HAVING COUNT(fp.flight_id) > 25;
 
+SELECT * FROM PLANE WHERE TO_NUMBER(TO_CHAR(SYSDATE,'YYYY') - TO_CHAR(YEAR_PRODUCED,'YYYY')) > 20;
+SELECT * FROM PLANE WHERE TO_NUMBER(TO_CHAR(EXTRACT(YEAR FROM SYSDATE)) - TO_CHAR(YEAR_PRODUCED,'YYYY')) > 20;
+
+SELECT
+p.id,
+p.model,
+p.code,
+p.year_produced,
+p.avg_fuel_consumption
+FROM PLANE p WHERE TO_NUMBER(TO_CHAR(SYSDATE,'YYYY') - TO_CHAR(YEAR_PRODUCED,'YYYY')) > 20;
+
+SELECT
+p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption FROM
+plane p, flight f WHERE
+f.plane = p.id AND
+TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = 2001 GROUP BY
+p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption HAVING COUNT(f.id) > 300;
+
+
+SELECT * FROM
+(SELECT * FROM flight f, flights_passengers fp
+WHERE f.id = fp.flight_id
+GROUP BY f.city_from
+ORDER BY COUNT(fp.flight_id) DESC)
+WHERE ROWNUM <=10;
+
+SELECT * FROM
+(SELECT * FROM flight f, flights_passengers fp
+WHERE f.city_from = 'DNIPRO' AND f.id = fp.flight_id
+GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to
+ORDER BY COUNT(fp.flight_id) DESC)
+WHERE ROWNUM <= 10;
+
+SELECT * FROM
+(SELECT * FROM flight f, flights_passengers fp
+WHERE f.id = fp.flight_id
+GROUP BY f.city_to
+ORDER BY COUNT(fp.flight_id) DESC)
+WHERE ROWNUM <=10;
+
+SELECT * FROM
+(SELECT * FROM flight f, flights_passengers fp
+WHERE f.city_to = 'DNIPRO' AND f.id = fp.flight_id
+GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to
+ORDER BY COUNT(fp.flight_id) DESC)
+WHERE ROWNUM <= 10;

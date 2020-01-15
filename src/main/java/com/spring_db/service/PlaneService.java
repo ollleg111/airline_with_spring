@@ -18,8 +18,30 @@ import java.util.List;
 @Service
 public class PlaneService extends GeneralService<Plane> {
 
-    private static final String OLD_PLANES_REQUEST = "";
-    private static final String REGULAR_PLANES_REQUEST = "";
+        private static final String OLD_PLANES_REQUEST =
+            "SELECT " +
+                    "p.id, " +
+                    "p.model, " +
+                    "p.code, " +
+                    "p.year_produced, " +
+                    "p.avg_fuel_consumption " +
+                    "FROM PLANE p " +
+                    "WHERE TO_NUMBER(TO_CHAR(SYSDATE,'YYYY') - TO_CHAR(YEAR_PRODUCED,'YYYY')) > 20";
+
+    /*
+     private static final String OLD_PLANES_REQUEST =
+            "SELECT * FROM PLANE " +
+                    "WHERE TO_NUMBER(TO_CHAR(EXTRACT(YEAR FROM SYSDATE)) - TO_CHAR(YEAR_PRODUCED,'YYYY')) > 20";
+     */
+
+    private static final String REGULAR_PLANES_REQUEST =
+            "SELECT" +
+                    "p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption " +
+                    "FROM plane p, flight f " +
+                    "WHERE " +
+                    "f.plane = p.id AND" +
+                    "TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = ? GROUP BY" +
+                    "p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption HAVING COUNT(f.id) > 300;";
 
     private String alarmMessage = PlaneService.class.getName();
 

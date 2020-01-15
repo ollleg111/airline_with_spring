@@ -26,10 +26,37 @@ import java.util.stream.Stream;
 @Service
 public class FlightService extends GeneralService<Flight> {
 
-    private static final String MOST_POPULAR_CITY_TO_REQUEST = "";
-    private static final String MOST_POPULAR_CITY_FROM_REQUEST = "";
-    private static final String MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST = "";
-    private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST = "";
+    private static final String MOST_POPULAR_CITY_TO_REQUEST =
+            "SELECT * FROM" +
+                    "(SELECT * FROM flight f, flights_passengers fp " +
+                    "WHERE f.id = fp.flight_id " +
+                    "GROUP BY f.city_from " +
+                    "ORDER BY COUNT(fp.flight_id) DESC)" +
+                    "WHERE ROWNUM <=10;";
+
+    private static final String MOST_POPULAR_CITY_FROM_REQUEST =
+            "SELECT * FROM" +
+                    "(SELECT * FROM flight f, flights_passengers fp " +
+                    "WHERE f.city_from = ? AND f.id = fp.flight_id " +
+                    "GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to " +
+                    "ORDER BY COUNT(fp.flight_id) DESC) " +
+                    "WHERE ROWNUM <= 10;";
+
+    private static final String MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST =
+            "SELECT * FROM" +
+                    "(SELECT * FROM flight f, flights_passengers fp " +
+                    "WHERE f.id = fp.flight_id " +
+                    "GROUP BY f.city_to " +
+                    "ORDER BY COUNT(fp.flight_id) DESC)" +
+                    "WHERE ROWNUM <=10;";
+
+    private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST =
+            "SELECT * FROM" +
+                    "(SELECT * FROM flight f, flights_passengers fp " +
+                    "WHERE f.city_to = ? AND f.id = fp.flight_id " +
+                    "GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to " +
+                    "ORDER BY COUNT(fp.flight_id) DESC) " +
+                    "WHERE ROWNUM <= 10;";
 
     private String alarmMessage = FlightService.class.getName();
 
@@ -277,7 +304,7 @@ public class FlightService extends GeneralService<Flight> {
             String flightRequestString) throws ServiceException {
         Map<String, List<Flight>> map;
         try {
-            Query query = entityManager.createNativeQuery(cityRequestString, String.class);
+            Query query = entityManager.createQuery(cityRequestString, String.class);
             map = new HashMap<>();
             List<String> mostPopularCity = query.getResultList();
 
