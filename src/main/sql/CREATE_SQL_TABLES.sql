@@ -116,30 +116,29 @@ TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = 2001 GROUP BY
 p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption HAVING COUNT(f.id) > 300;
 
 
-SELECT * FROM
-(SELECT * FROM flight f, flights_passengers fp
-WHERE f.id = fp.flight_id
-GROUP BY f.city_from
-ORDER BY COUNT(fp.flight_id) DESC)
-WHERE ROWNUM <=10;
+SELECT * FROM (
+SELECT F.CITY_TO FROM FLIGHT F, FLIGHTS_PASSENGERS FP
+WHERE F.ID = FP.FLIGHT_ID
+GROUP BY F.CITY_FROM
+ORDER BY COUNT(FP.FLIGHT_ID) DESC) WHERE ROWNUM <= 10;
 
-SELECT * FROM
-(SELECT * FROM flight f, flights_passengers fp
-WHERE f.city_from = 'DNIPRO' AND f.id = fp.flight_id
-GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to
-ORDER BY COUNT(fp.flight_id) DESC)
+SELECT * FROM (
+SELECT F.* FROM FLIGHT F, FLIGHTS_PASSENGERS FP
+WHERE F.CITY_FROM = 'DNIPRO' AND F.ID = FP.FLIGHT_ID
+GROUP BY F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO
+ORDER BY COUNT(FP.FLIGHT_ID) DESC)
 WHERE ROWNUM <= 10;
 
-SELECT * FROM
-(SELECT * FROM flight f, flights_passengers fp
-WHERE f.id = fp.flight_id
-GROUP BY f.city_to
-ORDER BY COUNT(fp.flight_id) DESC)
-WHERE ROWNUM <=10;
 
-SELECT * FROM
-(SELECT * FROM flight f, flights_passengers fp
-WHERE f.city_to = 'DNIPRO' AND f.id = fp.flight_id
-GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to
-ORDER BY COUNT(fp.flight_id) DESC)
+SELECT * FROM (
+SELECT F.CITY_TO FROM FLIGHT F, FLIGHTS_PASSENGERS FP
+WHERE F.ID = FP.FLIGHT_ID
+GROUP BY F.CITY_TO
+ORDER BY COUNT(FP.FLIGHT_ID) DESC) WHERE ROWNUM <= 10;
+
+SELECT * FROM (
+SELECT F.* FROM FLIGHT F, FLIGHTS_PASSENGERS FP
+WHERE F.CITY_TO = 'DNIPRO' AND F.ID = FP.FLIGHT_ID
+GROUP BY F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO
+ORDER BY COUNT(FP.FLIGHT_ID) DESC)
 WHERE ROWNUM <= 10;

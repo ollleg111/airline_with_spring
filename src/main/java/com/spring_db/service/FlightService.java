@@ -27,36 +27,38 @@ import java.util.stream.Stream;
 public class FlightService extends GeneralService<Flight> {
 
     private static final String MOST_POPULAR_CITY_TO_REQUEST =
-            "SELECT * FROM" +
-                    "(SELECT * FROM flight f, flights_passengers fp " +
-                    "WHERE f.id = fp.flight_id " +
-                    "GROUP BY f.city_from " +
-                    "ORDER BY COUNT(fp.flight_id) DESC)" +
-                    "WHERE ROWNUM <=10;";
+            "SELECT * FROM (" +
+                    "SELECT F.CITY_TO FROM FLIGHT F, FLIGHTS_PASSENGERS FP" +
+                    "WHERE F.ID = FP.FLIGHT_ID" +
+                    "GROUP BY F.CITY_TO" +
+                    "ORDER BY COUNT(FP.FLIGHT_ID) DESC) " +
+                    "WHERE ROWNUM <= 10";
 
     private static final String MOST_POPULAR_CITY_FROM_REQUEST =
-            "SELECT * FROM" +
-                    "(SELECT * FROM flight f, flights_passengers fp " +
-                    "WHERE f.city_from = ? AND f.id = fp.flight_id " +
-                    "GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to " +
-                    "ORDER BY COUNT(fp.flight_id) DESC) " +
-                    "WHERE ROWNUM <= 10;";
+            "SELECT * FROM (" +
+                    "SELECT F.CITY_TO FROM FLIGHT F, FLIGHTS_PASSENGERS FP" +
+                    "WHERE F.ID = FP.FLIGHT_ID" +
+                    "GROUP BY F.CITY_FROM" +
+                    "ORDER BY COUNT(FP.FLIGHT_ID) DESC) " +
+                    "WHERE ROWNUM <= 10";
 
     private static final String MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST =
-            "SELECT * FROM" +
-                    "(SELECT * FROM flight f, flights_passengers fp " +
-                    "WHERE f.id = fp.flight_id " +
-                    "GROUP BY f.city_to " +
-                    "ORDER BY COUNT(fp.flight_id) DESC)" +
-                    "WHERE ROWNUM <=10;";
+            "SELECT * FROM (" +
+                    "SELECT F.* FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
+                    "WHERE F.CITY_TO = ? AND " +
+                    "F.ID = FP.FLIGHT_ID " +
+                    "GROUP BY F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO " +
+                    "ORDER BY COUNT(FP.FLIGHT_ID) DESC) " +
+                    "WHERE ROWNUM <= 10";
 
     private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST =
-            "SELECT * FROM" +
-                    "(SELECT * FROM flight f, flights_passengers fp " +
-                    "WHERE f.city_to = ? AND f.id = fp.flight_id " +
-                    "GROUP BY f.id, f.plane, f.date_flight, f.city_from, f.city_to " +
-                    "ORDER BY COUNT(fp.flight_id) DESC) " +
-                    "WHERE ROWNUM <= 10;";
+            "SELECT * FROM (" +
+                    "SELECT F.* FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
+                    "WHERE F.CITY_FROM = ? AND " +
+                    "F.ID = FP.FLIGHT_ID " +
+                    "GROUP BY F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO " +
+                    "ORDER BY COUNT(FP.FLIGHT_ID) DESC) " +
+                    "WHERE ROWNUM <= 10";
 
     private String alarmMessage = FlightService.class.getName();
 
