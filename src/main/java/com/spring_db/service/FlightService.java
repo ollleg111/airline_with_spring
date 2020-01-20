@@ -44,7 +44,8 @@ public class FlightService extends GeneralService<Flight> {
 
     private static final String MOST_POPULAR_FLIGHTS_TO_CITY_REQUEST =
             "SELECT * FROM (" +
-                    "SELECT F.* FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
+                    "SELECT F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
+                    "FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
                     "WHERE F.CITY_TO = ? AND " +
                     "F.ID = FP.FLIGHT_ID " +
                     "GROUP BY F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO " +
@@ -53,7 +54,8 @@ public class FlightService extends GeneralService<Flight> {
 
     private static final String MOST_POPULAR_FLIGHTS_FROM_CITY_REQUEST =
             "SELECT * FROM (" +
-                    "SELECT F.* FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
+                    "SELECT F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
+                    "FROM FLIGHT F, FLIGHTS_PASSENGERS FP " +
                     "WHERE F.CITY_FROM = ? AND " +
                     "F.ID = FP.FLIGHT_ID " +
                     "GROUP BY F.ID, F.PLANE, F.DATE_FLIGHT, F.CITY_FROM, F.CITY_TO " +
