@@ -2,7 +2,7 @@ package com.spring_db.controller;
 
 import com.spring_db.entity.Passenger;
 import com.spring_db.exceptions.BadRequestException;
-import com.spring_db.exceptions.ServiceException;
+import com.spring_db.exceptions.DaoException;
 import com.spring_db.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class PassengerController {
             method = RequestMethod.GET,
             value = "/find",
             produces = "text/plain")
-    public ResponseEntity<Passenger> findById(@RequestParam(value = "id") Long id) throws ServiceException {
+    public ResponseEntity<Passenger> findById(@RequestParam(value = "id") Long id) throws DaoException {
         try {
             return new ResponseEntity<>(passengerService.findById(id), HttpStatus.OK);
         } catch (BadRequestException e) {
@@ -44,7 +44,7 @@ public class PassengerController {
             method = RequestMethod.POST,
             value = "/save",
             produces = "text/plain")
-    public ResponseEntity<Passenger> save(@RequestBody Passenger passenger) throws ServiceException {
+    public ResponseEntity<Passenger> save(@RequestBody Passenger passenger) throws DaoException {
         try {
             return new ResponseEntity<>(passengerService.save(passenger), HttpStatus.CREATED);
         } catch (BadRequestException e) {
@@ -58,7 +58,7 @@ public class PassengerController {
             method = RequestMethod.PUT,
             value = "/update",
             produces = "text/plain")
-    public ResponseEntity<Passenger> update(@RequestBody Passenger passenger) throws ServiceException {
+    public ResponseEntity<Passenger> update(@RequestBody Passenger passenger) throws DaoException {
         try {
             return new ResponseEntity<>(passengerService.update(passenger), HttpStatus.OK);
         } catch (BadRequestException e) {
@@ -72,7 +72,7 @@ public class PassengerController {
             method = RequestMethod.DELETE,
             value = "/delete",
             produces = "text/plain")
-    public ResponseEntity<String> delete(@RequestBody Passenger passenger) throws ServiceException {
+    public ResponseEntity<String> delete(@RequestBody Passenger passenger) throws DaoException {
         try {
             passengerService.delete(passenger);
             return new ResponseEntity<>(" Passenger was deleted ", HttpStatus.OK);
@@ -87,7 +87,7 @@ public class PassengerController {
             method = RequestMethod.DELETE,
             value = "/deleteById",
             produces = "text/plain")
-    public ResponseEntity<String> deleteById(@RequestParam(value = "id") Long id) throws ServiceException {
+    public ResponseEntity<String> deleteById(@RequestParam(value = "id") Long id) throws DaoException {
         try {
             passengerService.deleteById(id);
             return new ResponseEntity<>(" Passenger was deleted ", HttpStatus.OK);
@@ -102,7 +102,7 @@ public class PassengerController {
             method = RequestMethod.GET,
             value = "/findAll",
             produces = "text/plain")
-    public ResponseEntity<List<Passenger>> getAll() throws ServiceException {
+    public ResponseEntity<List<Passenger>> getAll() throws DaoException {
         try {
             return new ResponseEntity<>(passengerService.findAll(), HttpStatus.OK);
         } catch (BadRequestException e) {
@@ -120,7 +120,7 @@ public class PassengerController {
             value = "/regularPassengers",
             produces = "text/plain")
     public ResponseEntity<List<Passenger>> regularPassengers(@RequestParam(value = "year") Integer year)
-            throws ServiceException {
+            throws DaoException {
         try {
             return new ResponseEntity<>(passengerService.regularPassengers(year), HttpStatus.OK);
         } catch (BadRequestException e) {

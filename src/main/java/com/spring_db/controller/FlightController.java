@@ -3,6 +3,7 @@ package com.spring_db.controller;
 import com.spring_db.entity.Filter;
 import com.spring_db.entity.Flight;
 import com.spring_db.exceptions.BadRequestException;
+import com.spring_db.exceptions.DaoException;
 import com.spring_db.exceptions.ServiceException;
 import com.spring_db.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class FlightController {
             method = RequestMethod.GET,
             value = "/find",
             produces = "text/plain")
-    public ResponseEntity<Flight> findById(@RequestParam(value = "id") Long id) throws ServiceException {
+    public ResponseEntity<Flight> findById(@RequestParam(value = "id") Long id) throws DaoException {
         try {
             return new ResponseEntity<>(flightService.findById(id), HttpStatus.OK);
         } catch (BadRequestException e) {
@@ -55,7 +56,7 @@ public class FlightController {
             method = RequestMethod.POST,
             value = "/save",
             produces = "text/plain")
-    public ResponseEntity<Flight> save(@RequestBody Flight flight) throws ServiceException {
+    public ResponseEntity<Flight> save(@RequestBody Flight flight) throws DaoException {
         try {
             return new ResponseEntity<>(flightService.save(flight), HttpStatus.CREATED);
         } catch (BadRequestException e) {
@@ -69,7 +70,7 @@ public class FlightController {
             method = RequestMethod.PUT,
             value = "/update",
             produces = "text/plain")
-    public ResponseEntity<Flight> update(@RequestBody Flight flight) throws ServiceException {
+    public ResponseEntity<Flight> update(@RequestBody Flight flight) throws DaoException {
         try {
             return new ResponseEntity<>(flightService.update(flight), HttpStatus.OK);
         } catch (BadRequestException e) {
@@ -83,7 +84,7 @@ public class FlightController {
             method = RequestMethod.DELETE,
             value = "/delete",
             produces = "text/plain")
-    public ResponseEntity<String> delete(@RequestBody Flight flight) throws ServiceException {
+    public ResponseEntity<String> delete(@RequestBody Flight flight) throws DaoException {
         try {
             flightService.delete(flight);
             return new ResponseEntity<>(" Flight was deleted ", HttpStatus.OK);
@@ -98,7 +99,7 @@ public class FlightController {
             method = RequestMethod.DELETE,
             value = "/deleteById",
             produces = "text/plain")
-    public ResponseEntity<String> deleteById(@RequestParam(value = "id") Long id) throws ServiceException {
+    public ResponseEntity<String> deleteById(@RequestParam(value = "id") Long id) throws DaoException {
         try {
             flightService.deleteById(id);
             return new ResponseEntity<>(" Flight was deleted ", HttpStatus.OK);
@@ -141,7 +142,7 @@ public class FlightController {
             @RequestParam(value = "cityFrom") String inputCityFrom,
             @RequestParam(value = "cityTo") String inputCityTo,
             @RequestParam(value = "planeModel") String inputPlaneModel
-    ) throws ServiceException {
+    ) throws DaoException {
         try {
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -169,7 +170,7 @@ public class FlightController {
             method = RequestMethod.GET,
             value = "/mostPopularTo",
             produces = "text/plain")
-    public ResponseEntity<String> mostPopularTo() throws ServiceException {
+    public ResponseEntity<String> mostPopularTo() throws DaoException {
         try {
             return new ResponseEntity<>(
                     resultString(flightService.mostPopularTo()),
@@ -188,7 +189,7 @@ public class FlightController {
             method = RequestMethod.GET,
             value = "/mostPopularFrom",
             produces = "text/plain")
-    public ResponseEntity<String> mostPopularFrom() throws ServiceException {
+    public ResponseEntity<String> mostPopularFrom() throws DaoException {
         try {
             return new ResponseEntity<>(
                     resultString(flightService.mostPopularFrom()),
