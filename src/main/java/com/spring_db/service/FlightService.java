@@ -231,6 +231,7 @@ public class FlightService extends GeneralService<Flight> {
     }
 
     // SELECT * FROM FLIGHT WHERE DATE_FLIGHT <= ? AND DATE_FLIGHT >= ?
+    // SELECT * FROM FLIGHT WHERE DATE_FLIGHT BETWEEN = ? AND = ?
     @Transactional
     public List<Flight> datesFlightsList(Date dateFrom, Date dateTo) throws ServiceException {
         try {
