@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class GeneralDAO<T> {
+class GeneralDAO<T> {
     private Class<T> typeParameterClass;
 
     @PersistenceContext
