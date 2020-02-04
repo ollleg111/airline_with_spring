@@ -22,12 +22,10 @@ class GeneralDAO<T> {
     private static final String SELECT_FROM = "SELECT * FROM = ?";
     private String className = typeParameterClass.getName();
 
-    @Autowired
     public void setTypeParameterClass(Class<T> typeParameterClass) {
         this.typeParameterClass = typeParameterClass;
     }
 
-    @Autowired
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
