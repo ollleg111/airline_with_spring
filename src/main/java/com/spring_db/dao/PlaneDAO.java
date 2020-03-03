@@ -47,7 +47,7 @@ public class PlaneDAO extends GeneralDAO<Plane> {
                     "WHERE " +
                     "f.plane = p.id AND" +
                     "TO_NUMBER(TO_CHAR(f.date_flight,'YYYY')) = ? GROUP BY" +
-                    "p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption HAVING COUNT(f.id) > 300;";
+                    "p.id, p.model, p.code, p.year_produced, p.avg_fuel_consumption HAVING COUNT(f.id) > 300";
 
     @Override
     public Plane findById(Long id) throws DaoException {
