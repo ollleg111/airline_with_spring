@@ -22,7 +22,7 @@ public class PlaneDAO extends GeneralDAO<Plane> {
         setTypeParameterClass(Plane.class);
     }
 
-    private String alarmMessage = PlaneService.class.getName();
+    private String className = PlaneDAO.class.getName();
 
     private static final String OLD_PLANES_REQUEST =
             "SELECT " +
@@ -85,7 +85,7 @@ public class PlaneDAO extends GeneralDAO<Plane> {
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new HibernateException("Operation with planes was filed in method" +
-                    " oldPlane() from class " + alarmMessage);
+                    " oldPlane() from class " + className);
         }
     }
 
@@ -101,7 +101,7 @@ public class PlaneDAO extends GeneralDAO<Plane> {
         } catch (DaoException exception) {
             System.err.println(exception.getMessage());
             throw new HibernateException("Operation with planes was filed in method" +
-                    " regularPlanes() from class " + alarmMessage);
+                    " regularPlanes() from class " + className);
         }
     }
 }
